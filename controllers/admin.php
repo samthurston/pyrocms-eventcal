@@ -33,8 +33,8 @@ class Admin extends Admin_Controller
 		
 		$this->validation_rules = array(
 			array(
-				'field' => 'first_name',
-				'label' => lang('members_first_name'),
+				'field' => 'event_name',
+				'label' => lang('eventcal_event_name'),
 				'rules'	=> 'trim|required'
 			)
 		);
@@ -48,7 +48,7 @@ class Admin extends Admin_Controller
 	{	
 		// Create pagination links
 		$total_rows = $this->members_m->count();
-		$this->data->pagination = create_pagination('admin/members/index', $total_rows);
+		$this->data->pagination = create_pagination('admin/eventcal/index', $total_rows);
 		
 		// Using this data, get the relevant results
 		$this->data->members = $this->members_m->getMembers(array(
@@ -98,7 +98,7 @@ class Admin extends Admin_Controller
 			}
 			
 		}else{
-			$this->data->member = $this->members_m->getMember($id);	
+			$this->data->member = $this->eventcal_m->getMember($id);	
 		}
 		
 		$this->template->build('admin/form', $this->data);
@@ -145,7 +145,7 @@ class Admin extends Admin_Controller
 		$success_count = 0;
 		
 		foreach ($ids as $id){
-			if($this->members_m->delete($id)){
+			if($this->eventcal_m->delete($id)){
 				$success_count += 1;
 			}
 		}
@@ -156,7 +156,7 @@ class Admin extends Admin_Controller
 			$this->session->set_flashdata(array('error'=> $succes_count.' '.lang('members_delete_mult_error')));
 		}
 		
-		redirect('admin/members');
+		redirect('admin/eventcal');
 		
 	}
 	
