@@ -24,7 +24,7 @@ class Module_Eventcal extends Module {
 	{
 		// Your Install Logic
 		$calendar = "
-			CREATE TABLE `calendar` (
+			CREATE TABLE `eventcal` (
 			  `id` int(11) NOT NULL AUTO_INCREMENT,
 			  `slug` varchar(64) NOT NULL,
 			  `start` datetime NOT NULL,
@@ -40,7 +40,7 @@ class Module_Eventcal extends Module {
 
 	public function uninstall()
 	{
-		$this->dbforge->drop_table('calendar');
+		$this->dbforge->drop_table('eventcal');
 		return TRUE;
 	}
 

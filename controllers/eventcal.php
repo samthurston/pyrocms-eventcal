@@ -27,9 +27,15 @@ class Eventcal extends Public_Controller
 
 	function index($year = 0, $month = 0)
 	{
+		if (!$year || !$month)
+		{
+			$year = date('Y');
+			$day = date('j');
+		}
+		
 		// calendar config
 		$prefs['show_next_prev'] = TRUE;
-		$prefs['next_prev_url'] = "eventcal/index";
+		$prefs['next_prev_url'] = base_url()."eventcal/index";
 		$prefs['day_type'] = "long";
 		$prefs['template'] = '
 
@@ -50,10 +56,10 @@ class Eventcal extends Public_Controller
 			{cal_row_start}<tr>{/cal_row_start}
 			{cal_cell_start}<td>{/cal_cell_start}
 
-			{cal_cell_content}<a href="/eventcal/agenda/{year}/{month}/{day}">{day}</a>{content}{/cal_cell_content}
-			{cal_cell_content_today}<div class="today"><a href="/eventcal/agenda/{year}/{month}/{day}">{day}</a>{content}</div>{/cal_cell_content_today}
+			{cal_cell_content}<a href="'.base_url().'eventcal/agenda/'.$year.'/'.$month.'/{day}">{day}</a>{content}{/cal_cell_content}
+			{cal_cell_content_today}<div class="today"><a href="'.base_url().'eventcal/agenda/{year}/{month}/{day}">{day}</a>{content}</div>{/cal_cell_content_today}
 
-			{cal_cell_no_content}<a href="/eventcal/agenda/{year}/{month}/{day}">{day}</a>{/cal_cell_no_content}
+			{cal_cell_no_content}<a href="'.base_url().'eventcal/agenda/'.$year.'/'.$month.'/{day}">{day}</a>{/cal_cell_no_content}
 			{cal_cell_no_content_today}<div class="today">{day}</div>{/cal_cell_no_content_today}
 
 			{cal_cell_blank}&nbsp;{/cal_cell_blank}
@@ -66,11 +72,8 @@ class Eventcal extends Public_Controller
 		
 		$this->load->library('calendar', $prefs);
 		
-		if ($year && $month){
-			$calendar = $this->calendar->generate($year,$month);
-		}else{
-			$calendar = $this->calendar->generate();
-		}
+		$calendar = $this->calendar->generate($year,$month);
+		
 		
 		$this->template
 			->set('calendar', $calendar)
@@ -79,7 +82,14 @@ class Eventcal extends Public_Controller
 	
 	function agenda($year = 0, $month = 0, $day = 0)
 	{
-		echo 'year:',$year;
+		if(!$year || !$month || !$day)
+		{
+			$year = date('Y');
+			$month = date('j');
+			$day = date('d');
+		}
+		
+		$this->template->build('agenda');
 	}
 	
 	
