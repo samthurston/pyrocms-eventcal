@@ -8,12 +8,12 @@ class Eventcal_m extends MY_Model {
 			$this->db->where('start >', $params['start']);
 		}
 		
-		if(isset($params['end']))){
+		if(isset($params['end'])){
 			$this->db->where('start <', $params['end']);
 		}
 	
 		$query = $this->db->get('eventcal');
-		return $query->result;
+		return $query->result();
 	}
 	
 	function addEvent($params)

@@ -27,8 +27,11 @@ class Module_Eventcal extends Module {
 			CREATE TABLE `eventcal` (
 			  `id` int(11) NOT NULL AUTO_INCREMENT,
 			  `slug` varchar(64) NOT NULL,
-			  `start` datetime NOT NULL,
-			  `end` datetime NOT NULL,
+			  `event_name` varchar(64) NOT NULL,
+			  `start_date` date NOT NULL,
+			  `end_date` date NOT NULL,
+			  `start_time` time NOT NULL,
+			  `end_time` time NOT NULL,
 			  `location` varchar(255) NOT NULL,
 			  `details` text NOT NULL,
 			  PRIMARY KEY (`id`)

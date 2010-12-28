@@ -36,25 +36,57 @@ class Admin extends Admin_Controller
 				'field' => 'event_name',
 				'label' => lang('eventcal_event_name'),
 				'rules'	=> 'trim|required'
-			)
+			),
+			array(
+				'field' => 'slug',
+				'label' => lang('eventcal_slug'),
+				'rules'	=> 'trim|required'				
+			),
+			array(
+				'field' => 'start_date',
+				'label' => lang('eventcal_start_date'),
+				'rules'	=> 'trim|required'				
+			),
+			array(
+				'field' => 'end_date',
+				'label' => lang('eventcal_end_date'),
+				'rules'	=> 'trim|required'				
+			),
+			array(
+				'field' => 'start_time',
+				'label' => lang('eventcal_start_time'),
+				'rules'	=> 'trim|required'				
+			),
+			array(
+				'field' => 'end_time',
+				'label' => lang('eventcal_end_time'),
+				'rules'	=> 'trim|required'				
+			),
+			array(
+				'field' => 'location',
+				'label' => lang('eventcal_location'),
+				'rules'	=> 'trim|required'				
+			),
+			array(
+				'field' => 'details',
+				'label' => lang('eventcal_details'),
+				'rules'	=> 'trim|required'				
+			),
 		);
 		$this->form_validation->set_rules($this->validation_rules);
 		
 		$this->template->set_partial('shortcuts', 'admin/partials/shortcuts');
 	}
 	
-	// Admin: Show Members
-	function index()
+	// Admin: Show Event List
+	function index($year = 0, $month = 0)
 	{	
-		// Create pagination links
-		$total_rows = $this->members_m->count();
-		$this->data->pagination = create_pagination('admin/eventcal/index', $total_rows);
-		
-		// Using this data, get the relevant results
-		$this->data->members = $this->members_m->getMembers(array(
-			'order'=>'first_name ASC',
-			'limit' => $this->data->pagination['limit']
-		));		
+		if(!$year || !$month){
+			$year = date('Y');
+			$month = date('j');
+		}
+		$params = array('start'=>date('Y-m-j'));
+		$this->data->events = $this->eventcal_m->getEvents($params);
 		
 		// Render the view
 		$this->template
@@ -111,14 +143,14 @@ class Admin extends Admin_Controller
 		// Loop through each rule
 		foreach($this->validation_rules as $rule)
 		{
-			$member->{$rule['field']} = $this->input->post($rule['field']);
+			$event->{$rule['field']} = $this->input->post($rule['field']);
 		}
 		
 	
 		if ($this->form_validation->run())
 		{
 		
-			if ($this->eventcal_m->addMember($member))
+			if ($this->eventcal_m->addEvent($event))
 			{
 				$this->session->set_flashdata('success', sprintf(lang('eventcal_add_success'), $this->input->post('title'))); 
 				redirect('admin/eventcal/index');
