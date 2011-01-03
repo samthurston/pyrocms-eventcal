@@ -40,7 +40,7 @@ class Admin extends Admin_Controller
 			array(
 				'field' => 'slug',
 				'label' => lang('eventcal_slug'),
-				'rules'	=> 'trim|required'				
+				'rules'	=> 'trim|required|alpha_dash'				
 			),
 			array(
 				'field' => 'start_date',
@@ -53,14 +53,24 @@ class Admin extends Admin_Controller
 				'rules'	=> 'trim|required'				
 			),
 			array(
-				'field' => 'start_time',
+				'field' => 'start_time_hr',
 				'label' => lang('eventcal_start_time'),
-				'rules'	=> 'trim|required'				
+				'rules'	=> 'trim|is_natural|max_length[2]'				
 			),
 			array(
-				'field' => 'end_time',
+				'field' => 'start_time_min',
+				'label' => lang('eventcal_start_time'),
+				'rules'	=> 'trim|is_natural|exact_length[2]'				
+			),
+			array(
+				'field' => 'end_time_hr',
 				'label' => lang('eventcal_end_time'),
-				'rules'	=> 'trim|required'				
+				'rules'	=> 'trim|is_natural|max_length[2]'				
+			),
+			array(
+				'field' => 'end_time_min',
+				'label' => lang('eventcal_end_time'),
+				'rules'	=> 'trim|is_natural|exact_length[2]'				
 			),
 			array(
 				'field' => 'location',
@@ -105,7 +115,7 @@ class Admin extends Admin_Controller
 		// if it's still not set we have a problem
 		if(!$id){
 		
-			$this->session->set_flashdata('error',"Members ID ERROR");
+			$this->session->set_flashdata('error',lang('eventcal_id_err'));
 			redirect('admin/members');
 		}
 	
@@ -146,12 +156,49 @@ class Admin extends Admin_Controller
 			$event->{$rule['field']} = $this->input->post($rule['field']);
 		}
 		
+		// correcting some of the data fields from the db to match the form
+		if(!$event->start_date){
+			$event->start_date = date('n/j/Y');
+		}
+		if(!isset($event->start_time)){
+			$event->start_time = date('g:i');
+		}
+		
+		$stime = explode(':',$event->start_time);
+		
+		$event->start_time_hr = $stime[0];
+		$event->start_time_min = $stime[1];
+		
+		if(!$event->end_date){
+			$event->end_date = date('n/j/Y');
+		}
+		if(!isset($event->end_time)){
+			$event->end_time = date('g:i',(time()+(60*60)));
+		}
+		
+		$etime = explode(':',$event->end_time);
+		
+		$event->end_time_hr = $etime[0];
+		$event->end_time_min = $etime[1];
 	
 		if ($this->form_validation->run())
 		{
-		
+			$event->start_time = $event->start_time_hr . ':' . $event->start_time_min;
+			$event->end_time = $event->end_time_hr . ':' . $event->end_time_min;
+			
+			unset($event->start_time_min);
+			unset($event->start_time_hr);
+			unset($event->end_time_min);
+			unset($event->end_time_hr);
+			
+			$date_start = explode('/',$event->start_date);
+			$event->start_date = $date_start[2].'/'.$date_start[1].'/'.$date_start[0];
+			$date_end = explode('/',$event->end_date);
+			$event->end_date = $date_end[2].'/'.$date_end[1].'/'.$date_end[0];
+			
 			if ($this->eventcal_m->addEvent($event))
 			{
+			
 				$this->session->set_flashdata('success', sprintf(lang('eventcal_add_success'), $this->input->post('title'))); 
 				redirect('admin/eventcal/index');
 			}            

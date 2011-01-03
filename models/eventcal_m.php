@@ -5,11 +5,11 @@ class Eventcal_m extends MY_Model {
 	function getEvents($params = array())
 	{
 		if(isset($params['start'])){
-			$this->db->where('start >', $params['start']);
+			$this->db->where('start_date >', $params['start']);
 		}
 		
 		if(isset($params['end'])){
-			$this->db->where('start <', $params['end']);
+			$this->db->where('start_date <', $params['end']);
 		}
 	
 		$query = $this->db->get('eventcal');
