@@ -24,6 +24,7 @@ $lang['eventcal_lbl_end_date'] 		= "End Date";
 $lang['eventcal_lbl_end_time'] 		= "End Time";
 $lang['eventcal_lbl_location'] 		= "Location";
 $lang['eventcal_lbl_details'] 		= "Details";
+$lang['eventcal_lbl_actions'] 		= "Actions";
 
 /* messages */
 

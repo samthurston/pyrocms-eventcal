@@ -235,6 +235,12 @@ class Admin extends Admin_Controller
 		redirect('admin/eventcal');
 	}
 	
+	/*
+	
+	These are data filters for the forms and database - should be protected access (hence _ prefix)
+	
+	*/
+	
 	function _filter_to_form($event)
 	{
 		// split the times to separate fields
