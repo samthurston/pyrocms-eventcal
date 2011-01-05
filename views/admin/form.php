@@ -1,5 +1,7 @@
- <h2><?php echo lang('eventcal_admin_list');?></h2>
+ <?php $modpath = "addons/modules/eventcal/"; ?>
  
+ <h2><?php echo lang('eventcal_admin_list');?></h2>
+
  <style type="text/css">
  .spinner{width: 2em;}
  </style>
@@ -34,8 +36,8 @@
 		</li>
 		<li class="even">
 			<label for="start_time"><?php echo lang('eventcal_lbl_start_time'); ?></label>
-			<?php echo form_input('start_time_hr', htmlspecialchars_decode($event->start_time_hr), 'maxlength="2" size="2" style="width: 2em;" class="text"'); ?> : 
-			<?php echo form_input('start_time_min', htmlspecialchars_decode($event->start_time_min), 'maxlength="2" size="2" style="width: 2em;" class="text"'); ?>
+			<?php echo form_input('start_time_hr', htmlspecialchars_decode($event->start_time_hr), 'maxlength="2" size="2" style="width: 2em;" class="text hour"'); ?> : 
+			<?php echo form_input('start_time_min', htmlspecialchars_decode($event->start_time_min), 'maxlength="2" size="2" style="width: 2em;" class="text min"'); ?>
 			
 		</li>
 		<li>
@@ -45,8 +47,8 @@
 		</li>
 		<li>
 			<label for="end_time"><?php echo lang('eventcal_lbl_end_time'); ?></label>
-			<?php echo form_input('end_time_hr', htmlspecialchars_decode($event->end_time_hr), 'maxlength="2" size="2" style="width: 2em;" class="text"'); ?> : 
-			<?php echo form_input('end_time_min', htmlspecialchars_decode($event->end_time_min), 'maxlength="2" size="2" style="width: 2em;" class="text"'); ?>
+			<?php echo form_input('end_time_hr', htmlspecialchars_decode($event->end_time_hr), 'maxlength="2" size="2" style="width: 2em;" class="text hour"'); ?> : 
+			<?php echo form_input('end_time_min', htmlspecialchars_decode($event->end_time_min), 'maxlength="2" size="2" style="width: 2em;" class="text min"'); ?>
 			
 		</li>
 		<li class="even">
@@ -75,3 +77,14 @@
 </div>
 <?php echo form_hidden('id',$event->id) ?>
 <?php echo form_close();?>
+<script type="text/javascript" language="javascript" src="<?php echo $modpath ?>assets/js/jquery-spin.js"></script>
+
+ <script type="text/javascript" language="javascript">
+ 	
+	$(document).ready(function(){
+		$.spin.imageBasePath = '<?php echo $modpath ?>assets/img/';
+		$('.hour').spin({min:0,max:24});
+		$('.min').spin({min:0,max:60});
+		
+	});
+ </script>

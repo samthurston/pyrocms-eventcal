@@ -122,14 +122,14 @@ class Admin extends Admin_Controller
 		$this->data->method = 'edit/'.$id;
 		
 		// load the member data 
-		$member = $this->members_m->getMember($id);	
+		$event = $this->eventcal_m->getEvent($id);	
 		
 		// run the validation
 		if($this->form_validation->run()){
 			// pull the field values through input filter
 			foreach($this->validation_rules as $rule)
 			{
-				$member->{$rule['field']} = $this->input->post($rule['field']);
+				$event->{$rule['field']} = $this->input->post($rule['field']);
 			}
 			$this->data->member = $member;
 			// update the record
@@ -140,7 +140,9 @@ class Admin extends Admin_Controller
 			}
 			
 		}else{
-			$this->data->member = $this->eventcal_m->getMember($id);	
+			
+				
+			$this->data->member =& $event;
 		}
 		
 		$this->template->build('admin/form', $this->data);
@@ -241,10 +243,10 @@ class Admin extends Admin_Controller
 	
 	function delete($id = 0)
 	{
-		if($this->members_m->delete($id)){
-			$this->session->set_flashdata(array('success'=>$id.' '.lang('members_delete_success')));
+		if($this->eventcal_m->delete($id)){
+			$this->session->set_flashdata(array('success'=>$id.' '.lang('eventcal_delete_success')));
 		}else{
-			$this->session->set_flashdata(array('error'=>$id.' '.lang('members_delete_error')));
+			$this->session->set_flashdata(array('error'=>$id.' '.lang('eventcal_delete_error')));
 		}
 		
 		redirect('admin/members');
