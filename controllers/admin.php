@@ -122,7 +122,8 @@ class Admin extends Admin_Controller
 		$this->data->method = 'edit/'.$id;
 		
 		// load the member data 
-		$event = $this->eventcal_m->getEvent($id);	
+		$event = $this->eventcal_m->getEvent($id);
+		
 		
 		// run the validation
 		if($this->form_validation->run()){
@@ -131,20 +132,23 @@ class Admin extends Admin_Controller
 			{
 				$event->{$rule['field']} = $this->input->post($rule['field']);
 			}
-			$this->data->member = $member;
+			
+			// fix the record for update
+			$event = $this->_filter_to_db($event);
+			
 			// update the record
-			if ($this->members_m->update($id,$member)){
+			if ($this->eventcal_m->update($id,$event)){
 				$this->session->set_flashdata('success',"Successfully updated member ".$id);
 			}else{
 				$this->session->set_flashdata('error',"There was a problem updating ".$id);
 			}
 			
-		}else{
-			
-				
-			$this->data->member =& $event;
+		}else{	
+			// set some flashdata messages maybe?
+			$this->session->set_flashdata('error',"There was a problem updating ".$id);
 		}
 		
+		$this->data->event =& $this->_filter_to_form($event);
 		$this->template->build('admin/form', $this->data);
 	}
 	
@@ -152,55 +156,35 @@ class Admin extends Admin_Controller
 	function add()
 	{
 		$this->data->method = 'add';
+		
 		// Loop through each rule
 		foreach($this->validation_rules as $rule)
 		{
 			$event->{$rule['field']} = $this->input->post($rule['field']);
 		}
 		
-		// correcting some of the data fields from the db to match the form
+		// set default times if not set
 		if(!$event->start_date){
-			$event->start_date = date('n/j/Y');
+			$event->start_date = date('Y/j/n');
 		}
 		if(!isset($event->start_time)){
 			$event->start_time = date('g:i');
 		}
 		
-		$stime = explode(':',$event->start_time);
-		
-		$event->start_time_hr = $stime[0];
-		$event->start_time_min = $stime[1];
-		
 		if(!$event->end_date){
-			$event->end_date = date('n/j/Y');
+			$event->end_date = date('Y/j/n');
 		}
 		if(!isset($event->end_time)){
 			$event->end_time = date('g:i',(time()+(60*60)));
 		}
 		
-		$etime = explode(':',$event->end_time);
-		
-		$event->end_time_hr = $etime[0];
-		$event->end_time_min = $etime[1];
 	
 		if ($this->form_validation->run())
 		{
-			$event->start_time = $event->start_time_hr . ':' . $event->start_time_min;
-			$event->end_time = $event->end_time_hr . ':' . $event->end_time_min;
-			
-			unset($event->start_time_min);
-			unset($event->start_time_hr);
-			unset($event->end_time_min);
-			unset($event->end_time_hr);
-			
-			$date_start = explode('/',$event->start_date);
-			$event->start_date = $date_start[2].'/'.$date_start[1].'/'.$date_start[0];
-			$date_end = explode('/',$event->end_date);
-			$event->end_date = $date_end[2].'/'.$date_end[1].'/'.$date_end[0];
+			$event = $this->_filter_to_db($event);
 			
 			if ($this->eventcal_m->addEvent($event))
 			{
-			
 				$this->session->set_flashdata('success', sprintf(lang('eventcal_add_success'), $this->input->post('title'))); 
 				redirect('admin/eventcal/index');
 			}            
@@ -213,9 +197,8 @@ class Admin extends Admin_Controller
 		
 		$event->id = '';
 		
-		$this->data->event =& $event;
+		$this->data->event = $this->_filter_to_form($event);
 		
-
 		$this->template->build('admin/form', $this->data);
 	}
 	
@@ -249,10 +232,52 @@ class Admin extends Admin_Controller
 			$this->session->set_flashdata(array('error'=>$id.' '.lang('eventcal_delete_error')));
 		}
 		
-		redirect('admin/members');
+		redirect('admin/eventcal');
 	}
 	
-
+	function _filter_to_form($event)
+	{
+		// split the times to separate fields
+		$stime = explode(':',$event->start_time);
+		
+		$event->start_time_hr = $stime[0];
+		$event->start_time_min = $stime[1];
+		
+		$etime = explode(':',$event->end_time);
+		
+		$event->end_time_hr = $etime[0];
+		$event->end_time_min = $etime[1];
+		
+		// reorder dates from mysql to US fmt
+		
+		$date_start = explode('-',$event->start_date);
+		$event->start_date = $date_start[2].'/'.$date_start[1].'/'.$date_start[0];
+		$date_end = explode('-',$event->end_date);
+		$event->end_date = $date_end[2].'/'.$date_end[1].'/'.$date_end[0];
+		
+		return $event;
+	}
+	
+	function _filter_to_db($event)
+	{
+		// combine time fields
+		$event->start_time = $event->start_time_hr . ':' . $event->start_time_min;
+		$event->end_time = $event->end_time_hr . ':' . $event->end_time_min;
+		
+		// reorder date fields to mysql format
+		$date_start = explode('/',$event->start_date);
+		$event->start_date = $date_start[2].'-'.$date_start[1].'-'.$date_start[0];
+		$date_end = explode('/',$event->end_date);
+		$event->end_date = $date_end[2].'-'.$date_end[1].'-'.$date_end[0];
+		
+		// remove unused form elements from db insert obj.
+		unset($event->start_time_min);
+		unset($event->start_time_hr);
+		unset($event->end_time_min);
+		unset($event->end_time_hr);
+		
+		return $event;
+	}
 	
 }
 ?>

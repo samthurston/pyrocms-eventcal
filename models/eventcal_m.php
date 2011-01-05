@@ -1,6 +1,8 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
 class Eventcal_m extends MY_Model {
+
+	var $event_tbl = 'eventcal';
 	
 	function getEvents($params = array())
 	{
@@ -12,31 +14,38 @@ class Eventcal_m extends MY_Model {
 			$this->db->where('start_date <', $params['end']);
 		}
 	
-		$query = $this->db->get('eventcal');
+		$query = $this->db->get($this->event_tbl);
 		return $query->result();
 	}
 	
 	function addEvent($params)
 	{
-		$this->db->insert('eventcal',$params);
+		$this->db->insert($this->event_tbl,$params);
 	}
 	
-	function updateEvent($id,$params)
+	function update($id,$params)
 	{
 		$this->db->where('id',$id);
-		$this->db->update('eventcal',$params);
+		if($this->db->update($this->event_tbl,$params)){
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 	function getEvent($id)
 	{
 		$this->db->where('id',$id);
-		$this->db->get('eventcal');
+		$query = $this->db->get($this->event_tbl);
+		
+		$result = $query->result();
+		return($result[0]);
 	}
 	
 	function deleteEvent($id)
 	{
 		$this->db->where('id',$id);
-		$this->db->delete('eventcal');
+		$this->db->delete($this->event_tbl);
 	}
 
 }
