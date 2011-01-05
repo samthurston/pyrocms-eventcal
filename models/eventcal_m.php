@@ -7,11 +7,11 @@ class Eventcal_m extends MY_Model {
 	function getEvents($params = array())
 	{
 		if(isset($params['start'])){
-			$this->db->where('start_date >', $params['start']);
+			$this->db->where('start_date >=', $params['start']);
 		}
 		
 		if(isset($params['end'])){
-			$this->db->where('start_date <', $params['end']);
+			$this->db->where('start_date <=', $params['end']);
 		}
 	
 		$query = $this->db->get($this->event_tbl);
@@ -46,6 +46,20 @@ class Eventcal_m extends MY_Model {
 	{
 		$this->db->where('id',$id);
 		$this->db->delete($this->event_tbl);
+	}
+	
+	function getBySlug($slug)
+	{
+		$this->db->where('slug',$slug);
+		$query = $this->db->get($this->event_tbl);
+		
+		if($query){
+			$events = $query->result();
+			$event = $events[0];
+			return $event;
+		}else{
+			return false;
+		}
 	}
 
 }

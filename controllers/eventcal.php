@@ -27,13 +27,44 @@ class Eventcal extends Public_Controller
 
 	function index($year = 0, $month = 0)
 	{
+		$this->load->helper(array('date'));
 		if (!$year || !$month)
 		{
 			$year = date('Y');
-			$day = date('j');
+			$month = date('n');
+		}
+		
+		// pull the events
+		$lastday = days_in_month($month,$year);
+		$event_parm = array(
+			'start'=>$year.'-'.$month.'-'.'1',
+			'end' => $year.'-'.$month.'-'.$lastday);
+		
+		$events = $this->eventcal_m->getEvents($event_parm);
+		
+		
+		
+		$caldata = array();
+		// prep events for calendar
+		foreach ($events as $event)
+		{
+			$evdate = explode('-',$event->start_date);
+			$startday = ltrim($evdate[2],'0 ');
+			
+			$evtime = explode(':',$event->start_time);
+			if (isset($evtime[2])) unset($evtime[2]);
+			
+			$time = implode(':',$evtime);
+			
+			if(!isset($caldata[$startday])){
+				$caldata[$startday] = anchor('eventcal/detail/'.$event->slug,$time.' '.$event->event_name);
+			}else{
+				$caldata[$startday] .= '<br/>'.anchor('eventcal/detail/'.$event->slug,$time.' '.$event->event_name);
+			}
 		}
 		
 		// calendar config
+		
 		$prefs['show_next_prev'] = TRUE;
 		$prefs['next_prev_url'] = base_url()."eventcal/index";
 		$prefs['day_type'] = "long";
@@ -56,11 +87,11 @@ class Eventcal extends Public_Controller
 			{cal_row_start}<tr>{/cal_row_start}
 			{cal_cell_start}<td>{/cal_cell_start}
 
-			{cal_cell_content}<a href="'.base_url().'eventcal/agenda/'.$year.'/'.$month.'/{day}">{day}</a>{content}{/cal_cell_content}
-			{cal_cell_content_today}<div class="today"><a href="'.base_url().'eventcal/agenda/{year}/{month}/{day}">{day}</a>{content}</div>{/cal_cell_content_today}
+			{cal_cell_content}<a href="'.base_url().'eventcal/agenda/'.$year.'/'.$month.'/{day}">{day}</a><br/>{content}{/cal_cell_content}
+			{cal_cell_content_today}<div class="today"><a href="'.base_url().'eventcal/agenda/'.$year.'/'.$month.'/{day}">{day}</a><br/>{content}</div>{/cal_cell_content_today}
 
 			{cal_cell_no_content}<a href="'.base_url().'eventcal/agenda/'.$year.'/'.$month.'/{day}">{day}</a>{/cal_cell_no_content}
-			{cal_cell_no_content_today}<div class="today">{day}</div>{/cal_cell_no_content_today}
+			{cal_cell_no_content_today}<div class="today"><a href="'.base_url().'eventcal/agenda/'.$year.'/'.$month.'/{day}">{day}</a></div>{/cal_cell_no_content_today}
 
 			{cal_cell_blank}&nbsp;{/cal_cell_blank}
 
@@ -72,7 +103,7 @@ class Eventcal extends Public_Controller
 		
 		$this->load->library('calendar', $prefs);
 		
-		$calendar = $this->calendar->generate($year,$month);
+		$calendar = $this->calendar->generate($year,$month,$caldata);
 		
 		
 		$this->template
@@ -92,6 +123,15 @@ class Eventcal extends Public_Controller
 		$this->template->build('agenda');
 	}
 	
+	function detail($slug)
+	{
+		if($slug){
+			$event = $this->eventcal_m->getBySlug($slug);
+		}
+		$this->template
+			->set('event',$event)
+			->build('detail');
+	}
 	
 
 

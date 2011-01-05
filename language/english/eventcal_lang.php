@@ -25,6 +25,9 @@ $lang['eventcal_lbl_end_time'] 		= "End Time";
 $lang['eventcal_lbl_location'] 		= "Location";
 $lang['eventcal_lbl_details'] 		= "Details";
 $lang['eventcal_lbl_actions'] 		= "Actions";
+$lang['eventcal_lbl_starts'] 	= "Starts on:";
+$lang['eventcal_lbl_ends'] 	= "Ends on:";
+$lang['eventcal_lbl_locate']  	= "Held at:";
 
 /* messages */
 
