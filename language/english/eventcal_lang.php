@@ -11,6 +11,7 @@ $lang['eventcal_calendar'] 	= "Calendar";
 $lang['eventcal_agenda'] 	= "Agenda";
 $lang['eventcal_add_label']	= "Add an Event";
 $lang['eventcal_list_label']	= "List Events";
+$lang['eventcal_settings_label']	= "Settings";
 
 
 

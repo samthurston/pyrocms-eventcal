@@ -1,5 +1,6 @@
 <h3><?php echo $event->event_name;?></h3>
 <div class="event_cal_desc">
+
 <?php echo $event->details; ?>
 </div>
 <dl>
@@ -15,3 +16,5 @@
 <?php }	?>
 
 </dl>
+
+<? $this->load->view('partials/calnav'); ?>

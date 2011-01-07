@@ -70,7 +70,7 @@ class Eventcal extends Public_Controller
 		$prefs['day_type'] = "long";
 		$prefs['template'] = '
 
-			{table_open}<table border="0" cellpadding="0" cellspacing="0">{/table_open}
+			{table_open}<table border="0" cellpadding="0" cellspacing="0" class="eventcal-grid">{/table_open}
 
 			{heading_row_start}<tr>{/heading_row_start}
 
@@ -80,7 +80,7 @@ class Eventcal extends Public_Controller
 
 			{heading_row_end}</tr>{/heading_row_end}
 
-			{week_row_start}<tr>{/week_row_start}
+			{week_row_start}<tr class="eventcal-labels">{/week_row_start}
 			{week_day_cell}<td>{week_day}</td>{/week_day_cell}
 			{week_row_end}</tr>{/week_row_end}
 
@@ -116,11 +116,23 @@ class Eventcal extends Public_Controller
 		if(!$year || !$month || !$day)
 		{
 			$year = date('Y');
-			$month = date('j');
+			$month = date('n');
 			$day = date('d');
 		}
 		
-		$this->template->build('agenda');
+		$endyear = date('Y',strtotime('+1 month'));
+		$endmonth = date('n',strtotime('+1 month'));
+		$endday = date('d',strtotime('+1 month'));
+		
+		$lastday = days_in_month($month,$year);
+		$event_parm = array(
+			'start'=>$year.'-'.$month.'-'.$day,
+			'end' => $endyear.'-'.$endmonth.'-'.$endday);
+		
+		$events = $this->eventcal_m->getEvents($event_parm);
+		
+		$this->template->set('events',$events)
+				->build('agenda');
 	}
 	
 	function detail($slug)

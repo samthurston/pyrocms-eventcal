@@ -25,11 +25,17 @@ class Admin extends Admin_Controller
 	public function __construct()
 	{
 		parent::Admin_Controller();        
-		$this->load->model('eventcal_m');
-		$this->lang->load('eventcal');        
+		$this->load->model(array('eventcal_m','variables_m'));
+		$this->lang->load('eventcal');
+		
+		$this->tzvar = 'correction';
 	
 		// Load and set the validation rules
 		$this->load->library('form_validation');
+		
+		// loading settings data
+		$setdata = $this->variables_m->get_by(array('name'=>$this->tzvar));
+		$this->tzvalue = $setdata->data;
 		
 		$this->validation_rules = array(
 			array(
@@ -155,6 +161,7 @@ class Admin extends Admin_Controller
 	// Admin: Create a new member
 	function add()
 	{
+	
 		$this->data->method = 'add';
 		
 		// Loop through each rule
@@ -165,17 +172,20 @@ class Admin extends Admin_Controller
 		
 		// set default times if not set
 		if(!$event->start_date){
-			$event->start_date = date('Y/j/n');
+			$event->start_date = date('Y-j-n');
 		}
 		if(!isset($event->start_time)){
-			$event->start_time = date('g:i');
+			$time_adj_string = ($this->tzvalue > 0 ? '+':'' )."{$this->tzvalue} hours";
+			$event->start_time = date('g:i',strtotime($time_adj_string));
 		}
 		
 		if(!$event->end_date){
-			$event->end_date = date('Y/j/n');
+			$event->end_date = date('Y-j-n');
 		}
 		if(!isset($event->end_time)){
-			$event->end_time = date('g:i',(time()+(60*60)));
+			$future = $this->tzvalue+1;
+			$time_adj_string = ($future > 0 ? '+':'' )."{$future} hours";
+			$event->end_time = date('g:i',strtotime($time_adj_string));
 		}
 		
 	
@@ -233,6 +243,34 @@ class Admin extends Admin_Controller
 		}
 		
 		redirect('admin/eventcal');
+	}
+
+	function settings()
+	{
+		
+		$tzvalue = $this->input->post($this->tzvar,0);
+		if ($tzvalue){
+			$tzvalue = $tzvalue - 11;
+			$varmatch = $this->variables_m->get_by(array('name'=>$this->tzvar));
+			if(count($varmatch))
+			{
+				$varid = $varmatch->id;
+				$this->variables_m->update($varid,array('name'=>$this->tzvar,'data'=>$tzvalue));
+			}
+			else
+			{
+				$this->variables_m->insert(array('name'=>$this->tzvar,'data'=>$tzvalue));
+			}
+		}
+		else
+		{
+			$tzvalue = $this->tzvalue;
+		}
+	
+		$this->data->zones = range(-11,12,1); // change zero to loaded var
+		$this->data->correction = $tzvalue+11;
+		
+		$this->template->build('admin/settings', $this->data);
 	}
 	
 	/*

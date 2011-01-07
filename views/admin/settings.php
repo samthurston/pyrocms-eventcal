@@ -4,8 +4,11 @@
 <ol>
 	<li class="even">
  	<?php
-	echo form_label(array('Timezone Correction','correction'));
-	echo form_dropdown('shirts', $options, 'large'); ?>
+	echo form_label('Timezone Correction','correction');
+	echo form_dropdown('correction', $zones, $correction, 'id="correction"'); ?>
 	</li>
 </ol>
+<div class="float-right">
+	<?php $this->load->view('admin/partials/buttons', array('buttons' => array('save', 'cancel') )); ?>
+</div>
 <? echo form_close(); ?>
