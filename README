@@ -1,3 +1,6 @@
-WAY unfinished, basic event module for pyrocms
+basic event module for pyrocms
 
-don't even bother yet.
+it is usable, but barely. Agenda view needs some 
+improvements as do the admin views; but it's a start. 
+
+Contact me if you have questions: sam.thurston@gmail.com
