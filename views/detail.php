@@ -1,9 +1,9 @@
 <h3><?php echo $event->event_name;?></h3>
-<div class="event_cal_desc">
-
+<? $this->load->view('partials/calnav'); ?>
+<div class="eventcal-desc">
 <?php echo $event->details; ?>
 </div>
-<dl>
+<dl class="eventcal-event">
 	<dt><?php echo lang('eventcal_lbl_starts'); ?></dt>
 	<dd><?php echo unix_to_human(mysql_to_unix($event->start_date.' '.$event->start_time));  ?></dd>
 	
@@ -17,4 +17,4 @@
 
 </dl>
 
-<? $this->load->view('partials/calnav'); ?>
+

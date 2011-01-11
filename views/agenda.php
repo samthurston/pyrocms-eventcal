@@ -4,7 +4,14 @@
 
 <div id="eventcal-agenda">
 	<ol>
-		<? foreach ( $events as $event ){ ?>
+		<?php foreach ( $events as $event ){ ?>
+		
+		<?php 
+		
+		if ($event->start_date < ){}
+		
+		?>
+		
 		<li><?php echo $event->start_time; ?> - 
 			<a href="<?php echo base_url(); ?>/admin/eventcal/detail/<?php echo $event->slug; ?>">
 			<?php echo $event->event_name; ?>

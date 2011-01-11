@@ -37,3 +37,5 @@ $lang['eventcal_add_success'] 		= "Event was successfully added.";
 $lang['eventcal_edit_error'] 		= "There was a problem editing the event.";
 $lang['eventcal_edit_success'] 		= "Event changes were successfully saved.";
 $lang['eventcal_id_err'] 		= "ID ERROR";
+
+$lang['eventcal_no_events']		= "No events scheduled";
