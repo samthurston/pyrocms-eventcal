@@ -172,7 +172,7 @@ class Admin extends Admin_Controller
 		
 		// set default times if not set
 		if(!$event->start_date){
-			$event->start_date = date('Y-j-n');
+			$event->start_date = date('Y-n-j');
 		}
 		if(!isset($event->start_time)){
 			$time_adj_string = ($this->tzvalue > 0 ? '+':'' )."{$this->tzvalue} hours";
@@ -180,7 +180,7 @@ class Admin extends Admin_Controller
 		}
 		
 		if(!$event->end_date){
-			$event->end_date = date('Y-j-n');
+			$event->end_date = date('Y-n-j');
 		}
 		if(!isset($event->end_time)){
 			$future = $this->tzvalue+1;
@@ -236,7 +236,7 @@ class Admin extends Admin_Controller
 	
 	function delete($id = 0)
 	{
-		if($this->eventcal_m->delete($id)){
+		if($this->eventcal_m->deleteEvent($id)){
 			$this->session->set_flashdata(array('success'=>$id.' '.lang('eventcal_delete_success')));
 		}else{
 			$this->session->set_flashdata(array('error'=>$id.' '.lang('eventcal_delete_error')));
@@ -294,10 +294,11 @@ class Admin extends Admin_Controller
 		
 		// reorder dates from mysql to US fmt
 		
+		
 		$date_start = explode('-',$event->start_date);
-		$event->start_date = $date_start[2].'/'.$date_start[1].'/'.$date_start[0];
+		$event->start_date = $date_start[1].'/'.$date_start[2].'/'.$date_start[0];
 		$date_end = explode('-',$event->end_date);
-		$event->end_date = $date_end[2].'/'.$date_end[1].'/'.$date_end[0];
+		$event->end_date = $date_end[1].'/'.$date_end[2].'/'.$date_end[0];
 		
 		return $event;
 	}
@@ -310,9 +311,9 @@ class Admin extends Admin_Controller
 		
 		// reorder date fields to mysql format
 		$date_start = explode('/',$event->start_date);
-		$event->start_date = $date_start[2].'-'.$date_start[1].'-'.$date_start[0];
+		$event->start_date = $date_start[2].'-'.$date_start[0].'-'.$date_start[1];
 		$date_end = explode('/',$event->end_date);
-		$event->end_date = $date_end[2].'-'.$date_end[1].'-'.$date_end[0];
+		$event->end_date = $date_end[2].'-'.$date_end[0].'-'.$date_end[1];
 		
 		// remove unused form elements from db insert obj.
 		unset($event->start_time_min);

@@ -15,6 +15,7 @@ class Eventcal_m extends MY_Model {
 		}
 	
 		$query = $this->db->get($this->event_tbl);
+		
 		return $query->result();
 	}
 	
