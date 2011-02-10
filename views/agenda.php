@@ -15,11 +15,7 @@ $flag_nextweek = false;
 
 <div id="eventcal-agenda">
 	<ol>
-		<?php foreach ( $events as $event ){ ?>
-		<?
-		echo $agenda_start;
-		 echo mysql_to_unix($event->start_date.'00000000').'['.mysql_to_unix($agenda_start.'00000000').']'; ?>
-		<?php 
+		<?php foreach ( $events as $event ){
 		
 		if ($event->start_date == $agenda_start && !$flag_today){
 			echo '<li class="listdate">Today</li>';
@@ -33,7 +29,7 @@ $flag_nextweek = false;
 		
 		?>
 		
-		<li><?php echo $event->start_time; ?> - 
+		<li><?php echo $event->start_date .' @ '.$event->start_time; ?> - 
 			<a href="<?php echo base_url(); ?>eventcal/detail/<?php echo $event->slug; ?>">
 			<?php echo $event->event_name; ?>
 			</a>
