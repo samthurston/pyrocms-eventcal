@@ -19,6 +19,7 @@ class Widget_Event_list extends Widgets
 	//run the widget
 	public function run($options)
 	{
+		
 		$this->load->model('modules/module_m');
 		$this->load->model('eventcal/eventcal_m');
 		
@@ -37,7 +38,7 @@ class Widget_Event_list extends Widgets
 		
 		
 		$options['lang_none'] = 'hi there sailor';// lang('eventcal_no_events');
-		$options['events'] = $this->eventcal_m->getEvents();
+		// $options['events'] = $this->eventcal_m->getEvents();
 
 		return $options;
 		

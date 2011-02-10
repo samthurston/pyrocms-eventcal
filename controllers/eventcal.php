@@ -19,6 +19,7 @@ class Eventcal extends Public_Controller
 	function __construct()
 	{
 		parent::Public_Controller();
+		$this->load->helper('date');
 		$this->load->model('eventcal_m');
 		$this->lang->load('eventcal');
 		// set some language strings?
@@ -27,7 +28,7 @@ class Eventcal extends Public_Controller
 
 	function index($year = 0, $month = 0)
 	{
-		$this->load->helper(array('date'));
+		
 		if (!$year || !$month)
 		{
 			$year = date('Y');
@@ -120,6 +121,8 @@ class Eventcal extends Public_Controller
 			$day = date('d');
 		}
 		
+		$agenda_start = $year .'-'.$month.'-'.$day;
+		
 		$endyear = date('Y',strtotime('+1 month'));
 		$endmonth = date('n',strtotime('+1 month'));
 		$endday = date('d',strtotime('+1 month'));
@@ -132,6 +135,7 @@ class Eventcal extends Public_Controller
 		$events = $this->eventcal_m->getEvents($event_parm);
 		
 		$this->template->set('events',$events)
+				->set('agenda_start',$agenda_start)
 				->build('agenda');
 	}
 	
