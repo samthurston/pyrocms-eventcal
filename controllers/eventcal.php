@@ -141,14 +141,17 @@ class Eventcal extends Public_Controller
 	
 	function detail($slug)
 	{
+		
 		if($slug){
+			
 			$event = $this->eventcal_m->getBySlug($slug);
 			if(!$event){
 				$event = $this->eventcal_m->getEvent($slug);
 			}
+			
 		}
 		
-		if(!event) show_404();
+		if(!$event) show_404();
 		
 		$this->template
 			->set('event',$event)
