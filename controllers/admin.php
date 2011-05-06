@@ -156,7 +156,7 @@ class Admin extends Admin_Controller
 		
 		$this->data->event =& $this->_filter_to_form($event);
 		$this->template->append_metadata( js('codemirror/codemirror.js') )
-			->append_metadata( js('form.js', 'pages') )
+			->append_metadata( js(js_path('form.js','eventcal/assets')) ) )
 			->build('admin/form', $this->data);
 	}
 	
