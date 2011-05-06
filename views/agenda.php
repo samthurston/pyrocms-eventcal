@@ -22,10 +22,12 @@ $flag_nextweek = false;
 			$flag_today = true;
 		}
 		
-		if ((mysql_to_unix($event->start_date.'00000000') + strtotime('+1 day')) == ($agenda_start.'00000000') && !$flag_today){
+		if ((mysql_to_unix($agenda_start) + strtotime('+1 day')) > ($event->start_date) && !$flag_today){
 			echo '<li class="listdate">Tomorrow</li>';
-			$flag_today = true;
+			$flag_tomorrow = true;
 		}
+		
+		
 		
 		?>
 		

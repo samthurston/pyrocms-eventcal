@@ -117,14 +117,14 @@ class Eventcal extends Public_Controller
 		if(!$year || !$month || !$day)
 		{
 			$year = date('Y');
-			$month = date('n');
+			$month = date('m');
 			$day = date('d');
 		}
 		
 		$agenda_start = $year .'-'.$month.'-'.$day;
 		
 		$endyear = date('Y',strtotime('+1 month'));
-		$endmonth = date('n',strtotime('+1 month'));
+		$endmonth = date('m',strtotime('+1 month'));
 		$endday = date('d',strtotime('+1 month'));
 		
 		$lastday = days_in_month($month,$year);

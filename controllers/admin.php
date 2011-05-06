@@ -110,7 +110,7 @@ class Admin extends Admin_Controller
 			->build('admin/index', $this->data);
 	}
 	
-	//Admin: edit a member	
+	//Admin: edit a event	
 	
 	function edit($id = 0)
 	{
@@ -122,12 +122,12 @@ class Admin extends Admin_Controller
 		if(!$id){
 		
 			$this->session->set_flashdata('error',lang('eventcal_id_err'));
-			redirect('admin/members');
+			redirect('admin/eventcal');
 		}
 	
 		$this->data->method = 'edit/'.$id;
 		
-		// load the member data 
+		// load the event data 
 		$event = $this->eventcal_m->getEvent($id);
 		
 		
@@ -144,7 +144,7 @@ class Admin extends Admin_Controller
 			
 			// update the record
 			if ($this->eventcal_m->update($id,$event)){
-				$this->session->set_flashdata('success',"Successfully updated member ".$id);
+				$this->session->set_flashdata('success',"Successfully updated event ".$id);
 			}else{
 				$this->session->set_flashdata('error',"There was a problem updating ".$id);
 			}
@@ -155,10 +155,13 @@ class Admin extends Admin_Controller
 		}
 		
 		$this->data->event =& $this->_filter_to_form($event);
-		$this->template->build('admin/form', $this->data);
+		$this->template->append_metadata( js('codemirror/codemirror.js') )
+			->append_metadata( js('form.js', 'pages') )
+			->build('admin/form', $this->data);
 	}
 	
-	// Admin: Create a new member
+	// Admin: Create a new event
+	
 	function add()
 	{
 	
@@ -209,7 +212,9 @@ class Admin extends Admin_Controller
 		
 		$this->data->event = $this->_filter_to_form($event);
 		
-		$this->template->build('admin/form', $this->data);
+		$this->template->append_metadata( js('codemirror/codemirror.js') )
+			->append_metadata( js('form.js', 'pages') )
+			->build('admin/form', $this->data);
 	}
 	
 	function action()
@@ -225,9 +230,9 @@ class Admin extends Admin_Controller
 		}
 		
 		if ($success_count == $total){
-			$this->session->set_flashdata(array('success'=> $success_count.' '.lang('members_delete_mult_success')));
+			$this->session->set_flashdata(array('success'=> $success_count.' '.lang('eventcal_delete_mult_success')));
 		}else{
-			$this->session->set_flashdata(array('error'=> $succes_count.' '.lang('members_delete_mult_error')));
+			$this->session->set_flashdata(array('error'=> $succes_count.' '.lang('eventcal_delete_mult_error')));
 		}
 		
 		redirect('admin/eventcal');

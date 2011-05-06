@@ -77,14 +77,7 @@
 </div>
 <?php echo form_hidden('id',$event->id) ?>
 <?php echo form_close();?>
+<!--
 <script type="text/javascript" language="javascript" src="<?php echo $modpath ?>assets/js/jquery-spin.js"></script>
+ -->
 
- <script type="text/javascript" language="javascript">
- 	
-	$(document).ready(function(){
-		$.spin.imageBasePath = '<?php echo $modpath ?>assets/img/';
-		$('.hour').spin({min:0,max:24});
-		$('.min').spin({min:0,max:60});
-		
-	});
- </script>
