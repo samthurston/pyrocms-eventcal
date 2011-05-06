@@ -12,9 +12,9 @@
 	$(function(){
 
 		form = $('form.crud');
-		
-		$('input[name="title"]', form).keyup($.debounce(300, function(){
-		
+		alert('adding event')
+		$('input[name="event_name"]', form).keyup($.debounce(300, function(){
+			console.log('hi');
 			slug = $('input[name="slug"]', form);
 			
 			$.post(BASE_URI + 'index.php/ajax/url_title', { title : $(this).val() }, function(new_slug){
